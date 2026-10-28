@@ -7,10 +7,11 @@ import type { Activity, Project } from "@/lib/types";
 
 export default async function Dashboard() {
   const supabase = await createClient();
-  const [{ data: projects }, { count: clientCount }, { data: activity }] = await Promise.all([
+  const [{ data: projects }, { count: clientCount }, { data: activity }, { count: newEnquiries }] = await Promise.all([
     supabase.from("projects").select("*, clients(business_name)").order("updated_at", { ascending: false }),
     supabase.from("clients").select("id", { count: "exact", head: true }),
     supabase.from("activity").select("*, clients(business_name)").order("created_at", { ascending: false }).limit(12),
+    supabase.from("enquiries").select("id", { count: "exact", head: true }).eq("status", "new"),
   ]);
 
   const all = (projects ?? []) as Project[];
@@ -36,6 +37,7 @@ export default async function Dashboard() {
       </div>
 
       <div className="stats">
+        <Link href="/enquiries" className="stat"><p className="stat-label">New enquiries</p><p className="stat-value">{newEnquiries ?? 0}</p></Link>
         <div className="stat"><p className="stat-label">Clients</p><p className="stat-value">{clientCount ?? 0}</p></div>
         <div className="stat"><p className="stat-label">Active projects</p><p className="stat-value">{active.length}</p></div>
         <div className="stat"><p className="stat-label">Quoted pipeline</p><p className="stat-value">{fmtMoney(pipeline)}</p></div>

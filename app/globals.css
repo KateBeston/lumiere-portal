@@ -54,7 +54,7 @@ h3 { font-size: 14px; font-weight: 600; }
 .card { background: var(--panel); border: 1px solid var(--line); padding: 22px; }
 .card + .card { margin-top: 18px; }
 .card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 12px; }
-.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 26px; }
+.stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 26px; }
 .stat { background: var(--panel); border: 1px solid var(--line); padding: 18px 20px; }
 .stat-label { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
 .stat-value { font-family: var(--serif); font-style: italic; font-size: 32px; margin-top: 6px; }

@@ -191,3 +191,42 @@ export async function addNote(formData: FormData) {
   if (project_id) revalidatePath(`/projects/${project_id}`);
   revalidatePath("/");
 }
+
+// ---------- website enquiries ----------
+export async function setEnquiryStatus(id: string, status: "new" | "contacted" | "archived") {
+  const supabase = await createClient();
+  const { error } = await supabase.from("enquiries").update({ status }).eq("id", id);
+  if (error) fail(error.message);
+  revalidatePath("/enquiries");
+  revalidatePath("/");
+}
+
+export async function convertEnquiry(id: string) {
+  const supabase = await createClient();
+  const { data: enq } = await supabase.from("enquiries").select("*").eq("id", id).single();
+  if (!enq) fail("Enquiry not found");
+  if (enq!.client_id) redirect(`/clients/${enq!.client_id}`);
+
+  const { data: client, error } = await supabase
+    .from("clients")
+    .insert({
+      business_name: enq!.business || enq!.name,
+      contact_name: enq!.name,
+      email: enq!.email,
+      phone: enq!.phone,
+      source: "Website enquiry",
+      status: "prospect",
+      notes: enq!.package ? `Interested in: ${enq!.package}` : null,
+    })
+    .select("id")
+    .single();
+  if (error) fail(error.message);
+
+  if (enq!.message) {
+    await supabase.from("activity").insert({ client_id: client!.id, kind: "note", body: `Website enquiry:\n${enq!.message}` });
+  }
+  await supabase.from("enquiries").update({ status: "converted", client_id: client!.id }).eq("id", id);
+  revalidatePath("/enquiries");
+  revalidatePath("/clients");
+  redirect(`/clients/${client!.id}`);
+}

@@ -63,3 +63,17 @@ export type Activity = {
   created_at: string;
   clients?: { business_name: string } | null;
 };
+
+export type Enquiry = {
+  id: string;
+  name: string;
+  business: string | null;
+  email: string;
+  phone: string | null;
+  package: string | null;
+  message: string | null;
+  source: string;
+  status: "new" | "contacted" | "converted" | "archived";
+  client_id: string | null;
+  created_at: string;
+};

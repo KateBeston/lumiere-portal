@@ -31,6 +31,7 @@ export default async function PortalLayout({ children }: { children: React.React
         <a href="/" className="sidebar-logo"><img src="/lumiere-wordmark-reversed.svg" alt="Lumière" /></a>
         <nav>
           <NavLink href="/">Dashboard</NavLink>
+          <NavLink href="/enquiries">Enquiries</NavLink>
           <NavLink href="/clients">Clients</NavLink>
           <NavLink href="/projects">Projects</NavLink>
           <NavLink href="/documents">Documents</NavLink>
